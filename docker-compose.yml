@@ -1,0 +1,23 @@
+services:
+  shunt-logger:
+    build: .
+    image: boz/shunt-logger:latest
+    container_name: shunt-logger
+    # SAFER: just pass the SPI devices. If you hit permission issues, temporarily use privileged: true
+    devices:
+      - "/dev/spidev0.0:/dev/spidev0.0"
+      - "/dev/spidev0.1:/dev/spidev0.1"
+      # If you later use an ADS1115 (I2C), also add:
+      # - "/dev/i2c-1:/dev/i2c-1"
+    environment:
+      - GAIN=50.0                # OP07 gain: 1 + Rf/Rin (e.g., 49k/1k)
+      - SHUNT_MV_PER_A=0.5       # 50 mV / 100 A -> 0.5 mV/A
+      - V_DIV_TOP_OHMS=1000000   # 1M
+      - V_DIV_BOTTOM_OHMS=33000  # 33k
+      - SAMPLE_PERIOD_S=0.5
+      - LOG_PATH=/data/log.csv
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+    # If permissions bite, uncomment the next line as a quick fix:
+    # privileged: true
