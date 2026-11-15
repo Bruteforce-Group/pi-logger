@@ -1,5 +1,5 @@
 # Use ARM-compatible Python base (works on Pi OS 64-bit)
-FROM python:3.11-slim
+FROM python:3.15-slim
 
 # Minimal OS deps for building the spidev Python module
 RUN apt-get update && apt-get install -y --no-install-recommends \
